@@ -1,0 +1,55 @@
+Tính đến hiện tại thì đang có mấy thứ sau:
+- input.xlsx: 
+    . file này tổng hợp tất cả các thứ mình đã gom từ trước, trong đó có 1 cái thay đổi là phần hán nôm 
+với Quốc Ngữ dồn vô 1 cell hết. Đổi lại như này để tương thích với phần code.
+    . file hiện đang có 35 văn bia (chốn thiên + VJOL(Minh, Phước, Trực)) (làm ít test trước code)
+- Code:
+    . Đọc file input
+    . Dóng hàng cả văn bia (chưa tối ưu, chạy mất thời gian)
+    . Dùng MED levenshtein, insert '?' vào các vị trí thiếu (chỉ insert cho cả sinoNom và Quốc ngữ, không delete)
+    . Tách sinoNom, Quốc Ngữ thành các câu, lấy Quốc ngữ làm chuẩn (split theo dấu ".")
+    . In ra file output, hiện file output đang đạt được là câu Quốc ngữ đi chung với câu hán nôm tương ứng (tương đối đúng)
+- output.xlsx: 
+    . Hiện đang có 1 văn bia do T break để test trước, chạy hết thì lâu quá.
+    . Tuy chưa chạy hết nhưng mà lúc làm có đếm câu, nhiêu đây đang cỡ 1k4 câu (ráng target xong hết trên 4k câu)
+
+Cần làm gì tiếp?
+1. File input
+    . Chỗ này nhờ Trực với Triết chia ra làm tiếp, do là không còn thời gian code tự động nên thôi chơi ăn gian đi, mấy 
+    file output cũ tận dụng được gì thì tận dụng. Nhưng mà đã ăn gian rồi thì làm cho kĩ nha, lọc lỗi các kiểu ra. T có
+    ngó qua file output của bây thấy còn sót nhiều lỗi chưa xử lý (lọt số, kí hiệu, caption hình không lọc ra mà nhét vô
+    đống Quóc Ngữ luôn). Nên là đã chơi dơ làm thủ công cho xong rồi thì làm có tâm có tầm vô ha, hời hợt lát ra cái file 
+    output đỏ lè, cái này không ai muốn cả.
+    . Phần này Trực làm chính, Triết theo dõi và phụ làm thêm 1 phần nhỏ (chẳng hạn Triết làm tiếp 6 link VJOL còn thiếu,
+    Trực kéo từ bên file output lê sơ qua). Vã quá thì cứ copy rồi dán vô 1 cell bên input là được.
+
+2. Báo cáo
+    . Ở đây thì Triết làm chính còn Phước phụ theo phân công của Triết ha.
+    . Báo cáo thì chỗ này nhờ M chém gió nha Triết, siêu đội ơn. Sường report thì tính như này
+        + Mô tả mình làm clg: tổng hợp ngữ liệu từ giữa kỳ, thực hiện dóng hàng (mặc dù đề tài mình là paragraph alignment mà
+        đang làm như sentence alignment mẹ luôn r, tại paragraph khó khó, lúc đọc về mỗi nguồn mỗi kiểu nên không có cơ sở xử 
+        lý nhận diện paragraph).
+        + Giải thích file / hàm: này quăng cho gpt viết được, nhưng mà nhớ kiểm tra lại nha, với dựa theo mô tả của T ở trên 
+        cùng
+        + Nhận xét output: chưa tối ưu, thời gian chạy lâu, dóng hàng bị lệch, còn một số chữ hán bị dóng hàng sai với chữ quốc
+        ngữ tương ứng do có nhiễu trong quá trình lấy ngữ liệu, chưa lọc được hết.
+
+3. Code
+    . Code còn thiếu phần tô màu thôi, T tính tô như này
+        + ? bên chữ Hán: tô đỏ dấu chấm hỏi với chữ Quốc ngữ tương ứng đi với dấu ? đó
+        + ? bên chữ Quốc ngữ: tô xanh dương dấu chấm hỏi với chữ Hán Nôm tương ứng đi với dấu ? đó
+    . Cái này T có code thử rồi nhưng mà bị sai, chủ yếu là do khúc split Quốc ngữ từ văn bia thành các từ thì có mấy câu nó bị
+    lỗi như: ["tối", "nay", "," "có", "", "VN", "đá"] => 2 cái "," và "" làm nó dóng hàng lệch khó chịu vl, nhưng mà chưa fix
+    được thì buồn ngủ quá...
+    . Nên là phần này nhờ Phước coi qua nếu được nha, code này vừa làm vừa thử nghiệm nên chưa có organize, đang dơ vl nên người
+    ngoài đọc vô cũng hơi khó debug. Nên là nếu tay to quen đọc được đống code dơ của người khác thì xem qua giúp nha, còn khó
+    quá thì thôi qua làm report với Triết, ngủ dậy T mò sửa tiếp.
+
+CHỐT LẠI LÀ gì
+    - Trực làm chính phần file input, Triết đốc thúc + phụ 1 phần. (chi tiết tại phần 1 ở trên)
+    - Triết làm chính phần báo cáo, Phước hỗ trợ (chi tiết tại phần 2 ở trên)
+    - Phước coi qua phần code, nhắm không được thì qua làm với Triết (code đọc ở phần 3, báo cáo đọc ở phần 2)
+    - T ngủ xong dậy code tiếp cho xong cái tô màu với fix dóng hàng lại cho khớp
+
+    *** Nếu file output xong rồi mà T chưa ngủ dậy thì cứ chạy file convert_output.py nha, để nó gen ra file output luôn, chạy
+    chắc cũng lâu đó (tính bằng tiếng maybe do code ngu).
