@@ -54,7 +54,7 @@ if True:
         vb.sinoNom = vb.sinoNom.replace("\n", "")
 
         # Batch alignment
-        batch_size = 50
+        batch_size = 200
         sinoNom = ''
         quocNgu = ''
 
@@ -63,19 +63,32 @@ if True:
         vb.vietnamese = list(filter(None, vb.vietnamese))
         vb.vietnamese = list(filter(lambda a: not all([not c.isalpha() for c in a]), vb.vietnamese))
 
-        while len(vb.sinoNom) > 0:
-            sinoNom_batch = vb.sinoNom[:batch_size]
-            vietnamese_batch = vb.vietnamese[:batch_size]
+        start = 0
+        step = 100
+        while start <= max(len(vb.sinoNom), len(vb.vietnamese)):
+            sinoNom_batch = vb.sinoNom[start : start+batch_size]
+            vietnamese_batch = vb.vietnamese[start: start+batch_size]
 
             # Dóng hàng từng batch nhỏ
             sinoNom_, quocNgu_ = character_alignment(sinoNom_batch, vietnamese_batch)
 
-            sinoNom += sinoNom_
-            quocNgu += quocNgu_ + ' '
+            # Cap nhat vb.sinoNom, vb.vietnamese sau khi cắt
+            vb.sinoNom = vb.sinoNom[:start] + sinoNom_ + vb.sinoNom[start+batch_size:]
+            vb.vietnamese = vb.vietnamese[:start] + quocNgu_.split(' ') + vb.vietnamese[start+batch_size:]
 
-            # Cắt văn bản theo số ký tự thực tế sau dóng hàng
-            vb.sinoNom = vb.sinoNom[sinoNom_batch:]
-            vb.vietnamese = vb.vietnamese[vietnamese_batch:] 
+            # Xóa các ký tự trùng nhau
+            i = 0
+            while i < (min(len(vb.sinoNom), len(vb.vietnamese))):
+                if vb.sinoNom[i] == vb.vietnamese[i]:
+                    vb.vietnamese.pop(i)
+                    vb.sinoNom = vb.sinoNom[:i] + vb.sinoNom[i+1:]
+                    i -= 1
+                i += 1
+
+            start += step
+
+        sinoNom = vb.sinoNom
+        quocNgu = ' '.join(vb.vietnamese)
 
         #sinoNom, quocNgu = character_alignment(vb.sinoNom, vb.vietnamese)
 

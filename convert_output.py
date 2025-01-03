@@ -30,6 +30,8 @@ def output_file(output_file_name, list_vanbia):
             sinoNom_format_pair = []
             quocNgu_format_pair = []
             for sinoNom_char, quocNgu_char in zip(vb.sinoNom[i], vb.vietnamese[i]):
+                if (sinoNom_char == quocNgu_char):
+                    continue
                 nom_char = compare_character(sinoNom_char, quocNgu_char)
                 if len(nom_char) == 0:
                     sinoNom_format_pair.extend((red, sinoNom_char))
@@ -41,12 +43,12 @@ def output_file(output_file_name, list_vanbia):
                     sinoNom_format_pair.extend((black, sinoNom_char))
                     quocNgu_format_pair.extend((black, quocNgu_char + ' '))
             if len(sinoNom_format_pair) < 4:
-                sinoNom_format_pair.extend((black, ' '))
+                sinoNom_format_pair.extend((black, ' ', black, ' '))
             if len(quocNgu_format_pair) < 4:
-                quocNgu_format_pair.extend((black, ' '))
+                quocNgu_format_pair.extend((black, ' ', black, ' '))
             worksheet.write_rich_string(row, col + 2, *sinoNom_format_pair)
             worksheet.write_rich_string(row, col + 3, *quocNgu_format_pair)
             row += 1
     workbook.close()
 
-output_file('output.xlsx', list_vanbia)
+output_file('output_batch.xlsx', list_vanbia)
